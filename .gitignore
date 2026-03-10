@@ -13,6 +13,9 @@ obj/
 *.db-shm
 *.db-wal
 
+# Node Modules
+node_modules/
+
 # Squad: ignore runtime state (logs, inbox, sessions)
 .squad/orchestration-log/
 .squad/log/

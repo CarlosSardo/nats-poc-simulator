@@ -96,6 +96,10 @@ You'll see the dashboard with live device status, downtime history, and OEE gaug
 
 ![Downtime History](docs/screenshots/downtime-history.png)
 
+**Event Log** — Live stream of system events (connections, heartbeats, status changes)
+
+![Event Log](docs/screenshots/event-log.png)
+
 To stop:
 
 ```bash
