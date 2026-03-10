@@ -1,0 +1,17 @@
+[
+  {
+    "assignment_id": "alien-001",
+    "universe": "Alien",
+    "assigned_at": "2026-03-09T00:00:00Z",
+    "agents": ["Ripley", "Dallas", "Lambert"],
+    "project": "nats-poc"
+  },
+  {
+    "assignment_id": "alien-002",
+    "universe": "Alien",
+    "assigned_at": "2026-03-10T00:00:00Z",
+    "agents": ["Ripley", "Dallas", "Lambert", "Ash", "Parker"],
+    "project": "nats-poc",
+    "note": "Added Parker as Frontend Dev"
+  }
+]

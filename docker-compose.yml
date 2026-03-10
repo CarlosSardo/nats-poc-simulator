@@ -1,0 +1,42 @@
+services:
+  nats:
+    image: nats:2-alpine
+    ports:
+      - "4222:4222"   # Client connections
+      - "8222:8222"   # HTTP monitoring
+    command: ["--http_port", "8222"]
+    restart: unless-stopped
+
+  simulator:
+    build:
+      context: .
+      dockerfile: src/NatsPoc.PlcSimulator/Dockerfile
+    environment:
+      - Nats__Url=nats://nats:4222
+    depends_on:
+      - nats
+    restart: unless-stopped
+
+  detector:
+    build:
+      context: .
+      dockerfile: src/NatsPoc.DowntimeDetector/Dockerfile
+    environment:
+      - Nats__Url=nats://nats:4222
+    depends_on:
+      - nats
+    restart: unless-stopped
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: src/NatsPoc.Dashboard/Dockerfile
+    ports:
+      - "5050:8080"
+    environment:
+      - Nats__Url=nats://nats:4222
+    depends_on:
+      - nats
+      - simulator
+      - detector
+    restart: unless-stopped

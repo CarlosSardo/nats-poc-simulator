@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NATS PLC Monitor</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <h1>NATS PLC Monitor</h1>
+            <p class="subtitle">Real-time device heartbeat monitoring</p>
+        </div>
+        <div class="header-right">
+            <span id="connection-status" class="connection-indicator">
+                <span class="status-dot disconnected"></span>
+                <span class="status-text">Disconnected</span>
+            </span>
+        </div>
+    </header>
+
+    <section class="stats-bar">
+        <div class="stat">
+            <span class="stat-value" id="stat-total">5</span>
+            <span class="stat-label">Total Devices</span>
+        </div>
+        <div class="stat stat-online">
+            <span class="stat-value" id="stat-online">0</span>
+            <span class="stat-label">Online</span>
+        </div>
+        <div class="stat stat-offline">
+            <span class="stat-value" id="stat-offline">0</span>
+            <span class="stat-label">Offline</span>
+        </div>
+    </section>
+
+    <main class="device-grid">
+        <div class="device-card" id="card-PLC-PRESS-001" data-device-id="PLC-PRESS-001">
+            <div class="card-status-bar unknown"></div>
+            <div class="card-body">
+                <div class="card-header">
+                    <h2 class="device-name">Hydraulic Press</h2>
+                    <span class="device-id">PLC-PRESS-001</span>
+                </div>
+                <span class="status-badge unknown">UNKNOWN</span>
+                <div class="metrics">
+                    <div class="metric"><span class="metric-icon">&#x1F321;</span> <span class="temp-value">--</span>°C</div>
+                    <div class="metric"><span class="metric-icon">&#x26A1;</span> <span class="pressure-value">--</span> PSI</div>
+                    <div class="metric running-state"><span class="metric-icon">&#x2699;</span> <span class="running-value">--</span></div>
+                </div>
+                <div class="timing">
+                    <div class="last-seen">Last seen: <span class="last-seen-value">never</span></div>
+                    <div class="downtime-info hidden">
+                        <div>Down since: <span class="down-since-value">--</span></div>
+                        <div>Downtime: <span class="downtime-value">--</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="device-card" id="card-PLC-CONV-002" data-device-id="PLC-CONV-002">
+            <div class="card-status-bar unknown"></div>
+            <div class="card-body">
+                <div class="card-header">
+                    <h2 class="device-name">Conveyor Belt</h2>
+                    <span class="device-id">PLC-CONV-002</span>
+                </div>
+                <span class="status-badge unknown">UNKNOWN</span>
+                <div class="metrics">
+                    <div class="metric"><span class="metric-icon">&#x1F321;</span> <span class="temp-value">--</span>°C</div>
+                    <div class="metric"><span class="metric-icon">&#x26A1;</span> <span class="pressure-value">--</span> PSI</div>
+                    <div class="metric running-state"><span class="metric-icon">&#x2699;</span> <span class="running-value">--</span></div>
+                </div>
+                <div class="timing">
+                    <div class="last-seen">Last seen: <span class="last-seen-value">never</span></div>
+                    <div class="downtime-info hidden">
+                        <div>Down since: <span class="down-since-value">--</span></div>
+                        <div>Downtime: <span class="downtime-value">--</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="device-card" id="card-PLC-WELD-003" data-device-id="PLC-WELD-003">
+            <div class="card-status-bar unknown"></div>
+            <div class="card-body">
+                <div class="card-header">
+                    <h2 class="device-name">Welding Robot</h2>
+                    <span class="device-id">PLC-WELD-003</span>
+                </div>
+                <span class="status-badge unknown">UNKNOWN</span>
+                <div class="metrics">
+                    <div class="metric"><span class="metric-icon">&#x1F321;</span> <span class="temp-value">--</span>°C</div>
+                    <div class="metric"><span class="metric-icon">&#x26A1;</span> <span class="pressure-value">--</span> PSI</div>
+                    <div class="metric running-state"><span class="metric-icon">&#x2699;</span> <span class="running-value">--</span></div>
+                </div>
+                <div class="timing">
+                    <div class="last-seen">Last seen: <span class="last-seen-value">never</span></div>
+                    <div class="downtime-info hidden">
+                        <div>Down since: <span class="down-since-value">--</span></div>
+                        <div>Downtime: <span class="downtime-value">--</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="device-card" id="card-PLC-PACK-004" data-device-id="PLC-PACK-004">
+            <div class="card-status-bar unknown"></div>
+            <div class="card-body">
+                <div class="card-header">
+                    <h2 class="device-name">Packaging Machine</h2>
+                    <span class="device-id">PLC-PACK-004</span>
+                </div>
+                <span class="status-badge unknown">UNKNOWN</span>
+                <div class="metrics">
+                    <div class="metric"><span class="metric-icon">&#x1F321;</span> <span class="temp-value">--</span>°C</div>
+                    <div class="metric"><span class="metric-icon">&#x26A1;</span> <span class="pressure-value">--</span> PSI</div>
+                    <div class="metric running-state"><span class="metric-icon">&#x2699;</span> <span class="running-value">--</span></div>
+                </div>
+                <div class="timing">
+                    <div class="last-seen">Last seen: <span class="last-seen-value">never</span></div>
+                    <div class="downtime-info hidden">
+                        <div>Down since: <span class="down-since-value">--</span></div>
+                        <div>Downtime: <span class="downtime-value">--</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="device-card" id="card-PLC-OVEN-005" data-device-id="PLC-OVEN-005">
+            <div class="card-status-bar unknown"></div>
+            <div class="card-body">
+                <div class="card-header">
+                    <h2 class="device-name">Industrial Oven</h2>
+                    <span class="device-id">PLC-OVEN-005</span>
+                </div>
+                <span class="status-badge unknown">UNKNOWN</span>
+                <div class="metrics">
+                    <div class="metric"><span class="metric-icon">&#x1F321;</span> <span class="temp-value">--</span>°C</div>
+                    <div class="metric"><span class="metric-icon">&#x26A1;</span> <span class="pressure-value">--</span> PSI</div>
+                    <div class="metric running-state"><span class="metric-icon">&#x2699;</span> <span class="running-value">--</span></div>
+                </div>
+                <div class="timing">
+                    <div class="last-seen">Last seen: <span class="last-seen-value">never</span></div>
+                    <div class="downtime-info hidden">
+                        <div>Down since: <span class="down-since-value">--</span></div>
+                        <div>Downtime: <span class="downtime-value">--</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <section class="oee-section" id="oee-section">
+        <div class="oee-header">
+            <h2>OEE &mdash; Overall Equipment Effectiveness</h2>
+        </div>
+
+        <div class="oee-plant-wrapper">
+            <div class="oee-plant-gauge" id="plant-oee-gauge">
+                <div class="oee-gauge-ring"></div>
+                <div class="oee-plant-title">Plant-Wide OEE</div>
+            </div>
+        </div>
+
+        <div class="oee-device-grid">
+            <div class="oee-gauge-container" id="device-oee-PLC-PRESS-001">
+                <div class="oee-gauge-ring"></div>
+                <div class="oee-device-label">Hydraulic Press</div>
+                <div class="oee-breakdown">
+                    <div class="oee-apq">
+                        <span class="oee-apq-item"><span class="oee-apq-label">A</span> <span class="oee-val-a">--%</span></span>
+                        <span class="oee-apq-item"><span class="oee-apq-label">P</span> <span class="oee-val-p">--%</span></span>
+                        <span class="oee-apq-item"><span class="oee-apq-label">Q</span> <span class="oee-val-q">--%</span></span>
+                    </div>
+                    <div class="oee-parts">
+                        <span><span class="oee-parts-label">Total</span> <span class="oee-val-parts">0</span></span>
+                        <span><span class="oee-parts-label">Good</span> <span class="oee-val-good">0</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="oee-gauge-container" id="device-oee-PLC-CONV-002">
+                <div class="oee-gauge-ring"></div>
+                <div class="oee-device-label">Conveyor Belt</div>
+                <div class="oee-breakdown">
+                    <div class="oee-apq">
+                        <span class="oee-apq-item"><span class="oee-apq-label">A</span> <span class="oee-val-a">--%</span></span>
+                        <span class="oee-apq-item"><span class="oee-apq-label">P</span> <span class="oee-val-p">--%</span></span>
+                        <span class="oee-apq-item"><span class="oee-apq-label">Q</span> <span class="oee-val-q">--%</span></span>
+                    </div>
+                    <div class="oee-parts">
+                        <span><span class="oee-parts-label">Total</span> <span class="oee-val-parts">0</span></span>
+                        <span><span class="oee-parts-label">Good</span> <span class="oee-val-good">0</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="oee-gauge-container" id="device-oee-PLC-WELD-003">
+                <div class="oee-gauge-ring"></div>
+                <div class="oee-device-label">Welding Robot</div>
+                <div class="oee-breakdown">
+                    <div class="oee-apq">
+                        <span class="oee-apq-item"><span class="oee-apq-label">A</span> <span class="oee-val-a">--%</span></span>
+                        <span class="oee-apq-item"><span class="oee-apq-label">P</span> <span class="oee-val-p">--%</span></span>
+                        <span class="oee-apq-item"><span class="oee-apq-label">Q</span> <span class="oee-val-q">--%</span></span>
+                    </div>
+                    <div class="oee-parts">
+                        <span><span class="oee-parts-label">Total</span> <span class="oee-val-parts">0</span></span>
+                        <span><span class="oee-parts-label">Good</span> <span class="oee-val-good">0</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="oee-gauge-container" id="device-oee-PLC-PACK-004">
+                <div class="oee-gauge-ring"></div>
+                <div class="oee-device-label">Packaging Machine</div>
+                <div class="oee-breakdown">
+                    <div class="oee-apq">
+                        <span class="oee-apq-item"><span class="oee-apq-label">A</span> <span class="oee-val-a">--%</span></span>
+                        <span class="oee-apq-item"><span class="oee-apq-label">P</span> <span class="oee-val-p">--%</span></span>
+                        <span class="oee-apq-item"><span class="oee-apq-label">Q</span> <span class="oee-val-q">--%</span></span>
+                    </div>
+                    <div class="oee-parts">
+                        <span><span class="oee-parts-label">Total</span> <span class="oee-val-parts">0</span></span>
+                        <span><span class="oee-parts-label">Good</span> <span class="oee-val-good">0</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="oee-gauge-container" id="device-oee-PLC-OVEN-005">
+                <div class="oee-gauge-ring"></div>
+                <div class="oee-device-label">Industrial Oven</div>
+                <div class="oee-breakdown">
+                    <div class="oee-apq">
+                        <span class="oee-apq-item"><span class="oee-apq-label">A</span> <span class="oee-val-a">--%</span></span>
+                        <span class="oee-apq-item"><span class="oee-apq-label">P</span> <span class="oee-val-p">--%</span></span>
+                        <span class="oee-apq-item"><span class="oee-apq-label">Q</span> <span class="oee-val-q">--%</span></span>
+                    </div>
+                    <div class="oee-parts">
+                        <span><span class="oee-parts-label">Total</span> <span class="oee-val-parts">0</span></span>
+                        <span><span class="oee-parts-label">Good</span> <span class="oee-val-good">0</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="downtime-history-section">
+        <div class="downtime-header">
+            <div class="downtime-title-row">
+                <h2>Downtime History</h2>
+                <div class="downtime-stats">
+                    <div class="downtime-stat">
+                        <span class="downtime-stat-value" id="dt-stat-incidents">0</span>
+                        <span class="downtime-stat-label">Incidents</span>
+                    </div>
+                    <div class="downtime-stat">
+                        <span class="downtime-stat-value" id="dt-stat-total-time">0s</span>
+                        <span class="downtime-stat-label">Total Downtime</span>
+                    </div>
+                    <div class="downtime-stat">
+                        <span class="downtime-stat-value" id="dt-stat-avg">0s</span>
+                        <span class="downtime-stat-label">Avg Duration</span>
+                    </div>
+                    <div class="downtime-stat downtime-stat-active">
+                        <span class="downtime-stat-value" id="dt-stat-active">0</span>
+                        <span class="downtime-stat-label">Active Now</span>
+                    </div>
+                </div>
+            </div>
+            <div class="downtime-filters" id="downtime-filters">
+                <button class="dt-filter-btn active" data-filter="all">All Devices</button>
+            </div>
+        </div>
+        <div class="downtime-table-wrap">
+            <table class="downtime-table" id="downtime-table">
+                <thead>
+                    <tr>
+                        <th>Device</th>
+                        <th>Reason</th>
+                        <th>Started</th>
+                        <th>Ended</th>
+                        <th>Duration</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="downtime-tbody">
+                </tbody>
+            </table>
+            <div class="downtime-empty" id="downtime-empty">
+                <span class="downtime-empty-icon">&#x2714;</span>
+                <p>No downtime events recorded yet</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="event-log-section">
+        <h2>Event Log</h2>
+        <div class="event-log" id="event-log">
+            <div class="event-entry info">Waiting for connection...</div>
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
