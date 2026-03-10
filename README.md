@@ -78,6 +78,24 @@ Open **http://localhost:5050** in your browser.
 
 You'll see the dashboard with live device status, downtime history, and OEE gauges — all updating in real time as the simulator runs through failure scenarios.
 
+## 📸 Screenshots
+
+**Dashboard Overview** — Real-time device status with stats bar
+
+![Dashboard Overview](docs/screenshots/dashboard-overview.png)
+
+**Device Grid** — Live heartbeat cards with temperature, pressure, and running state
+
+![Device Grid](docs/screenshots/device-grid.png)
+
+**OEE Gauges** — Plant-wide and per-device Overall Equipment Effectiveness
+
+![OEE Section](docs/screenshots/oee-section.png)
+
+**Downtime History** — Filterable log of device outages with duration tracking
+
+![Downtime History](docs/screenshots/downtime-history.png)
+
 To stop:
 
 ```bash
