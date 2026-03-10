@@ -13,7 +13,12 @@ A .NET 8 project demonstrating **[NATS](https://nats.io/) messaging** in an indu
 
 ### 📑 Table of Contents
 
-[🏗️ Architecture](#️-architecture) · [✨ Features](#-features) · [📋 Prerequisites](#-prerequisites) · [🚀 Quick Start](#-quick-start) · [📸 Screenshots](#-screenshots) · [🔧 Development Mode](#-development-mode) · [⚙️ Configuration](#️-configuration) · [📡 API Endpoints](#-api-endpoints) · [📊 OEE](#-oee--overall-equipment-effectiveness) · [🔬 NATS Concepts](#-nats-concepts-demonstrated) · [📁 Project Structure](#-project-structure) · [🧪 Tests](#-running-tests) · [🛠️ Tech Stack](#️-tech-stack) · [🏭 Simulated Devices](#-simulated-devices)
+| | | | |
+|:--|:--|:--|:--|
+| [🏗️ Architecture](#-architecture) | [✨ Features](#-features) | [📋 Prerequisites](#-prerequisites) | [🚀 Quick Start](#-quick-start) |
+| [📸 Screenshots](#-screenshots) | [🔧 Development Mode](#-development-mode) | [⚙️ Configuration](#️-configuration) | [📡 API Endpoints](#-api-endpoints) |
+| [📊 OEE](#-oee--overall-equipment-effectiveness) | [🔬 NATS Concepts](#-nats-concepts-demonstrated) | [📁 Project Structure](#-project-structure) | [🧪 Running Tests](#-running-tests) |
+| [🛠️ Tech Stack](#️-tech-stack) | [🏭 Simulated Devices](#-simulated-devices) | | |
 
 ---
 
