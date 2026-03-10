@@ -2,7 +2,7 @@
 
 > **Note:** This project was created entirely with [Squad](https://github.com/bradygaster/squad) — an AI team orchestrator for GitHub Copilot. It is intended for **demo and learning purposes** only.
 
-A .NET 8 project demonstrating **NATS messaging** in an industrial IoT scenario. PLC devices publish heartbeats with production data, a real-time web dashboard tracks device status, records downtime history in SQLite, and calculates OEE (Overall Equipment Effectiveness) — the gold standard manufacturing metric.
+A .NET 8 project demonstrating **[NATS](https://nats.io/) messaging** in an industrial IoT scenario. PLC devices publish heartbeats with production data, a real-time web dashboard tracks device status, records downtime history in SQLite, and calculates OEE (Overall Equipment Effectiveness) — the gold standard manufacturing metric.
 
 ## 🏗️ Architecture
 
@@ -14,7 +14,7 @@ A .NET 8 project demonstrating **NATS messaging** in an industrial IoT scenario.
 │   data & failures    │             │    parts, rejects)
 └──────────────────────┘             │
                                      ▼
-                              ┌─────────────┐
+                              ┌──────────-───┐
                               │ NATS Server  │
                               │ (nats:2)     │
                               │ :4222 client │
