@@ -14,12 +14,12 @@ A .NET 8 project demonstrating **[NATS](https://nats.io/) messaging** in an indu
 │   data & failures    │             │    parts, rejects)
 └──────────────────────┘             │
                                      ▼
-                              ┌──────────-───┐
+                              ┌──────────────┐
                               │ NATS Server  │
                               │ (nats:2)     │
                               │ :4222 client │
                               │ :8222 HTTP   │
-                              └──────┬──────┘
+                              └──────┬───────┘
                                      │
                           sub: plc.*.heartbeat (wildcard)
                                      │
@@ -49,7 +49,50 @@ A .NET 8 project demonstrating **[NATS](https://nats.io/) messaging** in an indu
                               │ Color-coded output   │  via plc.*.heartbeat
                               └──────────────────────┘
 ```
+```mermaid
+flowchart TB
+    subgraph Simulator["🏭 PLC Simulator (Worker Service)"]
+        PLC1["Hydraulic Press\nPLC-PRESS-001"]
+        PLC2["Conveyor Belt\nPLC-CONV-002"]
+        PLC3["Welding Robot\nPLC-WELD-003"]
+        PLC4["Packaging Machine\nPLC-PACK-004"]
+        PLC5["Industrial Oven\nPLC-OVEN-005"]
+    end
 
+    subgraph NATS["📡 NATS Server"]
+        Subject["plc.*.heartbeat\n(pub/sub)"]
+    end
+
+    subgraph Dashboard["🖥️ Dashboard (ASP.NET Core :5050)"]
+        NatsSub["NATS Subscriber"]
+        Tracker["Device Tracker\n(up/down state)"]
+        OEECalc["OEE Calculator\n(Availability × Performance × Quality)"]
+        Hub["SignalR Hub\n(/hubs/dashboard)"]
+        DB[("SQLite\ndowntime.db")]
+        API["REST API\n/api/oee\n/api/downtimes"]
+    end
+
+    subgraph Detector["🔍 Downtime Detector (Worker Service)"]
+        DetSub["NATS Subscriber"]
+        DetTracker["Device Tracker"]
+        DetConsole["Color-coded Console Output"]
+    end
+
+    Browser["🌐 Browser\n(Real-time UI)"]
+
+    PLC1 & PLC2 & PLC3 & PLC4 & PLC5 -->|"publish\nJSON heartbeat"| Subject
+    Subject -->|"subscribe\nplc.*.heartbeat"| NatsSub
+    Subject -->|"subscribe\nplc.*.heartbeat"| DetSub
+    NatsSub --> Tracker
+    Tracker --> OEECalc
+    Tracker --> Hub
+    OEECalc --> Hub
+    Tracker -->|"record downtime\n& production"| DB
+    DB --> API
+    Hub -->|"push events"| Browser
+    API -->|"HTTP GET"| Browser
+    DetSub --> DetTracker --> DetConsole
+```
 ## ✨ Features
 
 - **Real-time device monitoring** — 5 simulated PLCs with live up/down status via SignalR
