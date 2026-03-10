@@ -1,8 +1,21 @@
 # NATS PoC — Industrial IoT PLC Monitoring with OEE
 
+[![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
+[![NATS](https://img.shields.io/badge/NATS-Messaging-27AAE1?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABhSURBVDhPY2RgYPgPxAQBExAzQGkMA0DCTFAMV4gLgDRAaZxgFI0EAJo0EEtjYjBqI3GA1Y0kAax+JBZg9SMxAImJRFc4aiNBAJcfcUUOSQFEN+pCkgII04+jNpIGGBgAqm0ePVwAAAAASUVORK5CYII=)](https://nats.io/)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker)](https://www.docker.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 > **Note:** This project was created entirely with [Squad](https://github.com/bradygaster/squad) — an AI team orchestrator for GitHub Copilot. It is intended for **demo and learning purposes** only.
 
 A .NET 8 project demonstrating **[NATS](https://nats.io/) messaging** in an industrial IoT scenario. PLC devices publish heartbeats with production data, a real-time web dashboard tracks device status, records downtime history in SQLite, and calculates OEE (Overall Equipment Effectiveness) — the gold standard manufacturing metric.
+
+---
+
+### 📑 Table of Contents
+
+[🏗️ Architecture](#️-architecture) · [✨ Features](#-features) · [📋 Prerequisites](#-prerequisites) · [🚀 Quick Start](#-quick-start) · [📸 Screenshots](#-screenshots) · [🔧 Development Mode](#-development-mode) · [⚙️ Configuration](#️-configuration) · [📡 API Endpoints](#-api-endpoints) · [📊 OEE](#-oee--overall-equipment-effectiveness) · [🔬 NATS Concepts](#-nats-concepts-demonstrated) · [📁 Project Structure](#-project-structure) · [🧪 Tests](#-running-tests) · [🛠️ Tech Stack](#️-tech-stack) · [🏭 Simulated Devices](#-simulated-devices)
+
+---
 
 ## 🏗️ Architecture
 
@@ -93,6 +106,9 @@ flowchart TB
     API -->|"HTTP GET"| Browser
     DetSub --> DetTracker --> DetConsole
 ```
+
+---
+
 ## ✨ Features
 
 - **Real-time device monitoring** — 5 simulated PLCs with live up/down status via SignalR
@@ -103,13 +119,15 @@ flowchart TB
 - **REST API** — JSON endpoints for OEE and downtime data
 - **Downtime detector** — Worker service monitoring device heartbeats with color-coded output (runs in Docker and standalone)
 
+---
+
 ## 📋 Prerequisites
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-
-That's it. Everything runs in Docker.
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) — that's it, everything runs in Docker.
 
 > For local development without Docker, you'll also need the [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0).
+
+---
 
 ## 🚀 Quick Start
 
@@ -120,6 +138,8 @@ docker compose up --build
 Open **http://localhost:5050** in your browser.
 
 You'll see the dashboard with live device status, downtime history, and OEE gauges — all updating in real time as the simulator runs through failure scenarios.
+
+---
 
 ## 📸 Screenshots
 
@@ -149,6 +169,8 @@ To stop:
 docker compose down
 ```
 
+---
+
 ## 🔧 Development Mode
 
 For local development, run services individually against a NATS server in Docker.
@@ -176,6 +198,8 @@ dotnet run --project src/NatsPoc.DowntimeDetector
 
 The Dashboard runs on http://localhost:5050 by default.
 
+---
+
 ## ⚙️ Configuration
 
 All services read configuration from `appsettings.json` and environment variables. Environment variables use `__` (double underscore) as the hierarchy separator.
@@ -189,6 +213,8 @@ All services read configuration from `appsettings.json` and environment variable
 
 In Docker Compose, `Nats__Url` is set to `nats://nats:4222` (the container hostname).
 
+---
+
 ## 📡 API Endpoints
 
 The Dashboard exposes these REST endpoints:
@@ -201,6 +227,8 @@ The Dashboard exposes these REST endpoints:
 | GET | `/api/downtimes?deviceId={id}` | Downtime history filtered by device |
 
 SignalR hub at `/hubs/dashboard` pushes real-time updates to connected browsers.
+
+---
 
 ## 📊 OEE — Overall Equipment Effectiveness
 
@@ -218,6 +246,8 @@ OEE = Availability × Performance × Quality
 
 An OEE of 100% means perfect production: no downtime, full speed, zero defects. World-class manufacturing targets ~85%.
 
+---
+
 ## 🔬 NATS Concepts Demonstrated
 
 | Concept | How it's used |
@@ -227,6 +257,8 @@ An OEE of 100% means perfect production: no downtime, full speed, zero defects. 
 | **Wildcard subscriptions** | Subscribers use `plc.*.heartbeat` to receive all devices |
 | **JSON serialization** | `NatsJsonSerializer<T>` for typed message deserialization |
 | **Auto-discovery** | New devices are automatically detected when they first publish |
+
+---
 
 ## 📁 Project Structure
 
@@ -252,6 +284,8 @@ nats-poc/
     └── NatsPoc.Tests/                 — Unit + integration tests (xUnit)
 ```
 
+---
+
 ## 🧪 Running Tests
 
 ```bash
@@ -259,6 +293,8 @@ dotnet test
 ```
 
 Tests cover device tracking, downtime history, OEE calculations, SignalR hub behavior, and NATS integration.
+
+---
 
 ## 🛠️ Tech Stack
 
@@ -272,7 +308,9 @@ Tests cover device tracking, downtime history, OEE calculations, SignalR hub beh
 | xUnit + FluentAssertions | Testing |
 | Docker Compose | Container orchestration |
 
-## Simulated Devices
+---
+
+## 🏭 Simulated Devices
 
 | Device ID | Name | Failure Profile |
 |-----------|------|----------------|
@@ -284,4 +322,6 @@ Tests cover device tracking, downtime history, OEE calculations, SignalR hub beh
 
 ---
 
-*Built with [Squad](https://github.com/bradygaster/squad) — AI team orchestration for GitHub Copilot.*
+<p align="center">
+  <em>Built with <a href="https://github.com/bradygaster/squad">Squad</a> — AI team orchestration for GitHub Copilot.</em>
+</p>
