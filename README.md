@@ -3,6 +3,7 @@
 [![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
 [![NATS](https://img.shields.io/badge/NATS-Messaging-27AAE1?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABhSURBVDhPY2RgYPgPxAQBExAzQGkMA0DCTFAMV4gLgDRAaZxgFI0EAJo0EEtjYjBqI3GA1Y0kAax+JBZg9SMxAImJRFc4aiNBAJcfcUUOSQFEN+pCkgII04+jNpIGGBgAqm0ePVwAAAAASUVORK5CYII=)](https://nats.io/)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker)](https://www.docker.com/)
+[![Platform](https://img.shields.io/badge/platform-GitHub%20Copilot-blue)](#what-is-squad)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 > **Note:** This project was created entirely with [Squad](https://github.com/bradygaster/squad) — an AI team orchestrator for GitHub Copilot. It is intended for **demo and learning purposes** only.
