@@ -47,3 +47,9 @@
 - **docker-compose.yml:** Added `detector` service with `Nats__Url=nats://nats:4222`, depends on `nats`. Updated `dashboard` to also depend on `detector`.
 - **`.dockerignore`:** Extended with `*.md`, `.gitignore`, `.gitattributes`, `*.sln` excludes to slim build context.
 - Key files: `src/NatsPoc.DowntimeDetector/Dockerfile`, `docker-compose.yml`, `.dockerignore`.
+
+## Learnings — .NET 10 Upgrade (2026-03-10)
+- **Full solution upgrade from net8.0 → net10.0.** All 5 .csproj files updated.
+- **NuGet version pins bumped:** EF Core (Sqlite + Design) 8.* → 10.*, Microsoft.Extensions.Hosting 8.* → 10.*. Independent packages (NATS.Net, xunit, FluentAssertions, NSubstitute, Test.Sdk) kept as-is.
+- **All 3 Dockerfiles updated:** SDK 8.0 → 10.0, aspnet/runtime 8.0 → 10.0.
+- **Build verified:** `dotnet restore` + `dotnet build` succeeded cleanly on all 5 projects with .NET 10 SDK 10.0.103.

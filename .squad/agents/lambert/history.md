@@ -17,6 +17,8 @@
 - **Tracker timeout sizing for integration tests:** Use a large tracker timeout (30s) with old heartbeats (60s ago) so recovery heartbeats don't re-timeout during the test. A 2s timeout causes the recovery heartbeat to expire before assertions run.
 - **CapturePayload must filter by method name:** When a SignalR hub sends multiple messages in `OnConnectedAsync`, test helpers using `.ReceivedCalls().Single()` break. Filter by the method name argument: `.Single(c => (string)c.GetArguments()[0]! == "ReceiveAllStatuses")`.
 
+- **.NET 10 upgrade — full test pass (2026-03-10):** All 49 tests passed after upgrade from .NET 8 to .NET 10. No test changes needed. Build clean, xUnit adapter v2.8.2 works on .NET 10.0.3. Duration: ~24s.
+
 ## Cross-Agent Updates (2026-03-10)
 - **Dallas** added `DowntimeDbContext` constructor param to `DashboardHub` — required updating existing `DashboardHubTests.cs`.
 - **Dallas** confirmed `IServiceScopeFactory` pattern for DB access from singleton BackgroundService — Lambert validated this works with real `ServiceCollection` in tests.

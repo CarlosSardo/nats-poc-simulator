@@ -2,9 +2,12 @@
 
 ## Project Context
 - **Project:** nats-poc — NATS-based downtime detector for simulated PLC devices
-- **Stack:** .NET 8 / C#, NATS.Net v2+ (NATS.Client.Core), Docker, xUnit
+- **Stack:** .NET 10 / C#, NATS.Net v2+ (NATS.Client.Core), Docker, xUnit, EF Core 10 + SQLite
 - **User:** Carlos Sardo
 - **Purpose:** Upskilling project to learn NATS messaging patterns
+
+## Learnings
+- **2026-03-10 — .NET 10 upgrade review (APPROVED):** Reviewed full .NET 8 → 10 upgrade by Dallas and Ripley. All 5 csproj files, 3 Dockerfiles, README, CONTRIBUTING checked. Zero stale refs in product code. Build green. Third-party packages (NATS.Net, xunit, FluentAssertions, NSubstitute) correctly untouched. Correct Docker base image selection: aspnet:10.0 for Dashboard, runtime:10.0 for workers. Only housekeeping note: stale bin/Debug/net8.0 build output dirs (gitignored, non-blocking).
 
 ## Architecture (inherited)
 - Subject pattern: `plc.{deviceId}.heartbeat` with wildcard `plc.*.heartbeat`

@@ -1,6 +1,6 @@
 # NATS PoC — Industrial IoT PLC Monitoring with OEE
 
-[![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
+[![.NET 10](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/download/dotnet/10.0)
 [![NATS](https://img.shields.io/badge/NATS-Messaging-27AAE1?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABhSURBVDhPY2RgYPgPxAQBExAzQGkMA0DCTFAMV4gLgDRAaZxgFI0EAJo0EEtjYjBqI3GA1Y0kAax+JBZg9SMxAImJRFc4aiNBAJcfcUUOSQFEN+pCkgII04+jNpIGGBgAqm0ePVwAAAAASUVORK5CYII=)](https://nats.io/)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker)](https://www.docker.com/)
 [![Platform](https://img.shields.io/badge/platform-GitHub%20Copilot-blue)](#what-is-squad)
@@ -8,7 +8,7 @@
 
 > **Note:** This project was created entirely with [Squad](https://github.com/bradygaster/squad) — an AI team orchestrator for GitHub Copilot. It is intended for **demo and learning purposes** only.
 
-A .NET 8 project demonstrating **[NATS](https://nats.io/) messaging** in an industrial IoT scenario. PLC devices publish heartbeats with production data, a real-time web dashboard tracks device status, records downtime history in SQLite, and calculates OEE (Overall Equipment Effectiveness) — the gold standard manufacturing metric.
+A .NET 10 project demonstrating **[NATS](https://nats.io/) messaging** in an industrial IoT scenario. PLC devices publish heartbeats with production data, a real-time web dashboard tracks device status, records downtime history in SQLite, and calculates OEE (Overall Equipment Effectiveness) — the gold standard manufacturing metric.
 
 ---
 
@@ -131,7 +131,7 @@ flowchart TB
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) — that's it, everything runs in Docker.
 
-> For local development without Docker, you'll also need the [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0).
+> For local development without Docker, you'll also need the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0).
 
 ---
 
@@ -306,11 +306,11 @@ Tests cover device tracking, downtime history, OEE calculations, SignalR hub beh
 
 | Technology | Purpose |
 |-----------|---------|
-| .NET 8 | Runtime |
+| .NET 10 | Runtime |
 | NATS.Net v2 | Messaging (pub/sub) |
 | ASP.NET Core | Web dashboard + REST API |
 | SignalR | Real-time browser updates |
-| EF Core 8 + SQLite | Downtime history persistence |
+| EF Core 10 + SQLite | Downtime history persistence |
 | xUnit + FluentAssertions | Testing |
 | Docker Compose | Container orchestration |
 
