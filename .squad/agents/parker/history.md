@@ -21,6 +21,7 @@
 - **Row animation**: CSS `dt-row-enter` keyframe gives new rows a subtle slide-in; active rows get a red-tinted background and a pulsing dot badge.
 - **XSS safety**: `escapeHtml()` via DOM text node for device names/IDs in table cells.
 - **Key file paths**: `wwwroot/index.html` (downtime section), `wwwroot/css/dashboard.css` (downtime styles), `wwwroot/js/dashboard.js` (downtime handlers + state).
+- **Event Log fuzzy search (SPEC-DEMO-02 Task 3)**: `matchesQuery(text, q)` lives in `wwwroot/js/dashboard.js` just above `addLogEntry` — case-insensitive substring OR ordered-subsequence match, no library. Active query persists in module-level `let activeLogQuery = ""`; `addLogEntry` consults it before insertion so hidden entries never flash. Filter is applied via `.hidden` class (CSS `display: none`) so entries stay in the DOM and the `MAX_LOG_ENTRIES` cap is unaffected. `dataset.rawText` stores the un-highlighted original so toggling the query doesn't stack `<mark>` tags. Escape key clears the input and restores all entries. Substring-only `<mark>` highlight shipped (subsequence skipped — too noisy).
 
 ## Cross-Agent Updates (2026-03-10)
 - **Dallas** provided 3 SignalR events and REST endpoint for downtime data — contract honored exactly.
@@ -29,3 +30,12 @@
 ## Team Updates
 - **2026-05-21:** SPEC-DEMO-02 published at `specs/spec-demo-02.md`. **You own Task 2** (per-device emoji via `wwwroot/js/device-icons.js`) and **Task 3** (fuzzy search on `#event-log`). Reviewer: Ripley. Task 2 starts after Dallas lands Task 1; Task 3 is independent.
 
+
+### 2026-05-21 - SPEC-DEMO-02 Task 2: Device Emoji
+- New global script wwwroot/js/device-icons.js exposes window.DEVICE_EMOJI, window.DEVICE_TYPE_EMOJI, window.getDeviceEmoji(id). Plain IIFE attached to window � no module system, no build step. Uses \uXXXX escapes for emoji so the file is ASCII-safe.
+- index.html load order: signalr.min.js (CDN) -> js/device-icons.js -> js/dashboard.js. device-icons.js MUST come before dashboard.js because dashboard.js calls window.getDeviceEmoji at DOMContentLoaded.
+- Prefix is applied at render time, never hardcoded into index.html. Static cards keep plain names; applyDeviceEmojis() runs once at DOMContentLoaded and overwrites both .device-name (inside .device-card[data-device-id]) and .oee-device-label (inside .oee-gauge-container[id^=device-oee-]) with emoji + U+00A0 + original name. Original name cached in dataset.rawName / dataset.rawLabel so re-application is idempotent.
+- getDeviceEmoji does exact-ID match first, then regex /^PLC-([A-Z]+)-/ middle-token fallback (e.g. future PLC-PRESS-008 still gets the press emoji), then ?? generic factory fallback.
+
+### 2026-05-21 - team update: SPEC-DEMO-02 shipped
+All four tasks complete. Dallas (Task 1) and Ripley (Task 4) approved by Ash. Parker shipped Tasks 2 + 3. Lambert added 8 tests + flagged ThermalDrift/BurstReject seam gap for next-session decision.

@@ -32,3 +32,11 @@
 ## Team Updates
 - **2026-05-21:** SPEC-DEMO-02 published at `specs/spec-demo-02.md`. **You review Task 1** (Dallas — new PLCs `PLC-CNC-006` and `PLC-PAINT-007`) and **Task 4** (Ripley — README architecture diagram consolidation to single Mermaid).
 
+
+### 2026-05-21 — SPEC-DEMO-02 Review (Task 1 Dallas + Task 4 Ripley)
+- **Task 1 (Dallas) — APPROVED.** Reviewed PlcSimulatorWorker.cs, index.html (7 cards + 7 OEE gauges, stat-total=7), dashboard.js (DEVICE_NAMES extended), PlcHeartbeat (untouched). All Acceptance Criteria met: new device entries with correct ranges (CNC 35..75 / 80..180 / ideal 6, Paint 22..38 / 5..25 / ideal 15); FailureProfile enum gained ThermalDrift + BurstReject; EvaluateFailure switch handles both (ThermalDrift ~3% outage 8-15s, BurstReject no outage path); per-device drift state held as method-locals (driftTempOffset capped +20, driftRejectBoost capped +0.10) with reset on outage and 0.5%/cycle scheduled blip; per-device burstUntil local, in-burst rate sampled [0.25, 0.35]; Cascade group unmodified; PlcHeartbeat record has zero new fields. Logging style consistent with prior services.
+- **Task 4 (Ripley) — APPROVED.** Reviewed README.md ## Architecture section. ASCII block removed; single flowchart TB; 4 subgraphs (Simulator, NATSServer, Dashboard, Detector); all 7 PLCs listed individually; plc.*.heartbeat wildcard is the explicit fan-out node; both subscribers present (NatsHeartbeatService + DowntimeDetectorWorker); Dashboard internal flow correct (NatsHeartbeatService -> DeviceTracker -> {OeeCalculationService, DashboardHub, DowntimeDbContext} -> Browser via SignalR + REST). Edge labels are meaningful and use concrete service names. Mermaid syntax is clean (& escaped, <br/> for line breaks). Other README sections untouched.
+- **Follow-up (non-blocking):** Features section in README still reads "5 simulated PLCs" — stale after Task 1 but explicitly out-of-scope for Task 4 per spec. Worth a quick sweep in a future doc-only task.
+
+### 2026-05-21 - team update: SPEC-DEMO-02 shipped
+All four tasks complete. Dallas (Task 1) and Ripley (Task 4) approved by Ash. Parker shipped Tasks 2 + 3. Lambert added 8 tests + flagged ThermalDrift/BurstReject seam gap for next-session decision.
