@@ -292,4 +292,83 @@ public class DeviceTrackerTests
         allStatuses.Should().HaveCount(100, "all 100 devices should be tracked");
         allStatuses.Values.Should().AllSatisfy(s => s.IsUp.Should().BeTrue());
     }
+
+    /// <summary>
+    /// SPEC-DEMO-02 Task 1: confirm DeviceTracker handles up→down→up transitions
+    /// for every device ID in the simulator fleet, including the two new entries
+    /// PLC-CNC-006 (ThermalDrift) and PLC-PAINT-007 (BurstReject). The tracker is
+    /// device-ID-agnostic so this is a regression-style sanity check that the new
+    /// IDs flow through the public surface unchanged.
+    /// </summary>
+    [Theory]
+    [InlineData("PLC-PRESS-001")]
+    [InlineData("PLC-CONV-002")]
+    [InlineData("PLC-WELD-003")]
+    [InlineData("PLC-PACK-004")]
+    [InlineData("PLC-OVEN-005")]
+    [InlineData("PLC-CNC-006")]
+    [InlineData("PLC-PAINT-007")]
+    public void DeviceTracker_FleetDeviceIds_RecordUpDownUpTransitions(string deviceId)
+    {
+        // Arrange
+        var tracker = new DeviceTracker(DefaultTimeout);
+        var t0 = DateTimeOffset.UtcNow;
+
+        // Act 1 — initial heartbeat → UP
+        tracker.RecordHeartbeat(deviceId, t0);
+        var initialStatus = tracker.GetStatus(deviceId, asOf: t0);
+
+        // Act 2 — 20s of silence → DOWN (exceeds 15s timeout)
+        var downCheckTime = t0.AddSeconds(20);
+        var downStatus = tracker.GetStatus(deviceId, asOf: downCheckTime);
+
+        // Act 3 — recovery heartbeat → UP again
+        var recoveryTime = t0.AddSeconds(25);
+        tracker.RecordHeartbeat(deviceId, recoveryTime);
+        var recoveredStatus = tracker.GetStatus(deviceId, asOf: recoveryTime);
+
+        // Assert — full lifecycle works for this device ID
+        initialStatus.IsUp.Should().BeTrue($"{deviceId} just sent its first heartbeat");
+        initialStatus.LastSeen.Should().Be(t0);
+
+        downStatus.IsUp.Should().BeFalse($"{deviceId} went silent for 20s, exceeds 15s timeout");
+        downStatus.DownSince.Should().NotBeNull($"{deviceId} should record when it went down");
+
+        recoveredStatus.IsUp.Should().BeTrue($"{deviceId} sent a fresh heartbeat, should recover");
+        recoveredStatus.LastSeen.Should().Be(recoveryTime);
+        recoveredStatus.DownSince.Should().BeNull($"{deviceId} is no longer down after recovery");
+    }
+
+    /// <summary>
+    /// SPEC-DEMO-02 Task 1: confirm GetAllStatuses returns all seven simulator
+    /// device IDs when each has sent at least one heartbeat. Guards against any
+    /// future tracker change that might filter unknown IDs.
+    /// </summary>
+    [Fact]
+    public void DeviceTracker_GetAllStatuses_IncludesAllSevenFleetDevices()
+    {
+        // Arrange
+        var tracker = new DeviceTracker(DefaultTimeout);
+        var now = DateTimeOffset.UtcNow;
+        var fleetIds = new[]
+        {
+            "PLC-PRESS-001", "PLC-CONV-002", "PLC-WELD-003",
+            "PLC-PACK-004", "PLC-OVEN-005",
+            "PLC-CNC-006", "PLC-PAINT-007",
+        };
+
+        // Act
+        foreach (var id in fleetIds)
+            tracker.RecordHeartbeat(id, now);
+
+        var allStatuses = tracker.GetAllStatuses(asOf: now);
+
+        // Assert
+        allStatuses.Should().HaveCount(7, "all seven simulator devices are registered");
+        foreach (var id in fleetIds)
+        {
+            allStatuses.Should().ContainKey(id, $"{id} sent a heartbeat");
+            allStatuses[id].IsUp.Should().BeTrue($"{id} just sent a heartbeat");
+        }
+    }
 }

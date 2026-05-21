@@ -6,7 +6,9 @@
         "PLC-CONV-002": "Conveyor Belt",
         "PLC-WELD-003": "Welding Robot",
         "PLC-PACK-004": "Packaging Machine",
-        "PLC-OVEN-005": "Industrial Oven"
+        "PLC-OVEN-005": "Industrial Oven",
+        "PLC-CNC-006": "CNC Mill",
+        "PLC-PAINT-007": "Paint Booth"
     };
 
     const MAX_LOG_ENTRIES = 50;
@@ -14,6 +16,9 @@
 
     const deviceData = {};
     let lastSeenTimers = null;
+
+    // --- Event Log Search State ---
+    let activeLogQuery = "";
 
     // --- Downtime History State ---
     let downtimeRecords = [];
@@ -27,6 +32,50 @@
 
     function getCard(deviceId) {
         return document.getElementById("card-" + deviceId);
+    }
+
+    // --- Device emoji prefix (SPEC-DEMO-02 Task 2) ---
+    // device-icons.js exposes a global getDeviceEmoji(id). We apply the prefix
+    // at render time so static HTML stays plain and auto-discovered devices
+    // also get prefixed.
+
+    var NBSP = "\u00A0";
+
+    function emojiPrefix(deviceId) {
+        var fn = (typeof window !== "undefined") ? window.getDeviceEmoji : null;
+        var emoji = (typeof fn === "function") ? fn(deviceId) : "\uD83C\uDFED";
+        return emoji + NBSP;
+    }
+
+    function applyEmojiToDeviceCards() {
+        var cards = document.querySelectorAll(".device-card[data-device-id]");
+        for (var i = 0; i < cards.length; i++) {
+            var card = cards[i];
+            var deviceId = card.getAttribute("data-device-id");
+            var nameEl = card.querySelector(".device-name");
+            if (!nameEl || !deviceId) continue;
+            var rawName = nameEl.dataset.rawName || nameEl.textContent;
+            nameEl.dataset.rawName = rawName;
+            nameEl.textContent = emojiPrefix(deviceId) + rawName;
+        }
+    }
+
+    function applyEmojiToOeeLabels() {
+        var containers = document.querySelectorAll('.oee-gauge-container[id^="device-oee-"]');
+        for (var i = 0; i < containers.length; i++) {
+            var container = containers[i];
+            var deviceId = container.id.replace(/^device-oee-/, "");
+            var labelEl = container.querySelector(".oee-device-label");
+            if (!labelEl || !deviceId) continue;
+            var rawLabel = labelEl.dataset.rawLabel || labelEl.textContent;
+            labelEl.dataset.rawLabel = rawLabel;
+            labelEl.textContent = emojiPrefix(deviceId) + rawLabel;
+        }
+    }
+
+    function applyDeviceEmojis() {
+        applyEmojiToDeviceCards();
+        applyEmojiToOeeLabels();
     }
 
     // --- Formatting ---
@@ -162,11 +211,94 @@
 
     // --- Event Log ---
 
+    function matchesQuery(text, q) {
+        if (!q) return true;
+        const t = text.toLowerCase();
+        const lq = q.toLowerCase();
+        if (t.includes(lq)) return true;
+        let i = 0;
+        for (const c of t) {
+            if (c === lq[i]) i++;
+            if (i === lq.length) return true;
+        }
+        return false;
+    }
+
+    function escapeHtmlText(s) {
+        return s.replace(/[&<>"']/g, function (ch) {
+            switch (ch) {
+                case "&": return "&amp;";
+                case "<": return "&lt;";
+                case ">": return "&gt;";
+                case "\"": return "&quot;";
+                case "'": return "&#39;";
+            }
+            return ch;
+        });
+    }
+
+    function highlightSubstring(entry, q) {
+        // Only highlight substring matches; subsequence is too noisy.
+        // Always reset to plain text first to avoid stacking <mark> tags.
+        const text = entry.dataset.rawText || entry.textContent;
+        entry.dataset.rawText = text;
+        if (!q) {
+            entry.textContent = text;
+            return;
+        }
+        const lt = text.toLowerCase();
+        const lq = q.toLowerCase();
+        const idx = lt.indexOf(lq);
+        if (idx < 0) {
+            // No substring match — leave plain (still visible if subsequence matched).
+            entry.textContent = text;
+            return;
+        }
+        const before = text.slice(0, idx);
+        const hit = text.slice(idx, idx + q.length);
+        const after = text.slice(idx + q.length);
+        entry.innerHTML =
+            escapeHtmlText(before) +
+            "<mark>" + escapeHtmlText(hit) + "</mark>" +
+            escapeHtmlText(after);
+    }
+
+    function applyEntryFilter(entry, q) {
+        const text = entry.dataset.rawText || entry.textContent;
+        entry.dataset.rawText = text;
+        if (matchesQuery(text, q)) {
+            entry.classList.remove("hidden");
+            highlightSubstring(entry, q);
+        } else {
+            entry.classList.add("hidden");
+            // Clear any leftover highlight so a future match starts clean.
+            entry.textContent = text;
+        }
+    }
+
+    function applyLogFilter() {
+        const log = document.getElementById("event-log");
+        if (!log) return;
+        const children = log.children;
+        for (let i = 0; i < children.length; i++) {
+            applyEntryFilter(children[i], activeLogQuery);
+        }
+    }
+
     function addLogEntry(message, cls) {
         const log = document.getElementById("event-log");
         const entry = document.createElement("div");
         entry.className = "event-entry " + (cls || "info");
-        entry.textContent = "[" + timestamp() + "] " + message;
+        const fullText = "[" + timestamp() + "] " + message;
+        entry.textContent = fullText;
+        entry.dataset.rawText = fullText;
+
+        // Apply active query before insertion so a hidden entry never flashes.
+        if (!matchesQuery(fullText, activeLogQuery)) {
+            entry.classList.add("hidden");
+        } else if (activeLogQuery) {
+            highlightSubstring(entry, activeLogQuery);
+        }
 
         // Insert at top
         if (log.firstChild) {
@@ -601,6 +733,21 @@
             }
             updateStats();
             startTimers();
+        // Wire up event-log search
+        var searchEl = document.getElementById("event-log-search");
+        if (searchEl) {
+            searchEl.addEventListener("input", function (e) {
+                activeLogQuery = e.target.value || "";
+                applyLogFilter();
+            });
+            searchEl.addEventListener("keydown", function (e) {
+                if (e.key === "Escape") {
+                    searchEl.value = "";
+                    activeLogQuery = "";
+                    applyLogFilter();
+                }
+            });
+        }
         });
 
         // --- Downtime History hub handlers ---
@@ -679,6 +826,9 @@
 
     // --- Init ---
     document.addEventListener("DOMContentLoaded", function () {
+        // Apply per-device emoji prefixes to static cards + OEE labels.
+        applyDeviceEmojis();
+
         // Wire up downtime filter clicks
         var filtersEl = document.getElementById("downtime-filters");
         if (filtersEl) {
