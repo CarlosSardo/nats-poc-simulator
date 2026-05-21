@@ -25,92 +25,54 @@ A .NET 10 project demonstrating **[NATS](https://nats.io/) messaging** in an ind
 
 ## 🏗️ Architecture
 
-```
-┌──────────────────────┐
-│   PLC Simulator      │      pub
-│   5 PLC devices      │─────────────┐   plc.{id}.heartbeat
-│   with production    │             │   (temp, pressure,
-│   data & failures    │             │    parts, rejects)
-└──────────────────────┘             │
-                                     ▼
-                              ┌──────────────┐
-                              │ NATS Server  │
-                              │ (nats:2)     │
-                              │ :4222 client │
-                              │ :8222 HTTP   │
-                              └──────┬───────┘
-                                     │
-                          sub: plc.*.heartbeat (wildcard)
-                                     │
-                              ┌──────▼──────────────────┐
-                              │   Dashboard (ASP.NET)   │
-                              │   :5050                 │
-                              │                         │
-                              │   ┌─── SignalR ──────┐  │
-                              │   │  Real-time push  │  │
-                              │   │  to browser      │  │
-                              │   └──────────────────┘  │
-                              │                         │
-                              │   ┌─── SQLite ───────┐  │
-                              │   │  Downtime history│  │
-                              │   │  OEE snapshots   │  │
-                              │   └──────────────────┘  │
-                              │                         │
-                              │   ┌─── REST API ─────┐  │
-                              │   │  /api/oee        │  │
-                              │   │  /api/downtimes  │  │
-                              │   └──────────────────┘  │
-                              └─────────────────────────┘
-
-                              ┌──────────────────────┐
-                              │ Downtime Detector    │
-                              │ Worker Service       │  Also subscribes
-                              │ Color-coded output   │  via plc.*.heartbeat
-                              └──────────────────────┘
-```
 ```mermaid
 flowchart TB
-    subgraph Simulator["🏭 PLC Simulator (Worker Service)"]
-        PLC1["Hydraulic Press\nPLC-PRESS-001"]
-        PLC2["Conveyor Belt\nPLC-CONV-002"]
-        PLC3["Welding Robot\nPLC-WELD-003"]
-        PLC4["Packaging Machine\nPLC-PACK-004"]
-        PLC5["Industrial Oven\nPLC-OVEN-005"]
+    subgraph Simulator["🏭 PLC Simulator - Worker Service"]
+        PLC1["Hydraulic Press<br/>PLC-PRESS-001"]
+        PLC2["Conveyor Belt<br/>PLC-CONV-002"]
+        PLC3["Welding Robot<br/>PLC-WELD-003"]
+        PLC4["Packaging Machine<br/>PLC-PACK-004"]
+        PLC5["Industrial Oven<br/>PLC-OVEN-005"]
+        PLC6["CNC Mill<br/>PLC-CNC-006"]
+        PLC7["Paint Booth<br/>PLC-PAINT-007"]
     end
 
-    subgraph NATS["📡 NATS Server"]
-        Subject["plc.*.heartbeat\n(pub/sub)"]
+    subgraph NATSServer["📡 NATS Server - 4222 client / 8222 HTTP"]
+        Subject["plc.*.heartbeat<br/>wildcard subject"]
     end
 
-    subgraph Dashboard["🖥️ Dashboard (ASP.NET Core :5050)"]
-        NatsSub["NATS Subscriber"]
-        Tracker["Device Tracker\n(up/down state)"]
-        OEECalc["OEE Calculator\n(Availability × Performance × Quality)"]
-        Hub["SignalR Hub\n(/hubs/dashboard)"]
-        DB[("SQLite\ndowntime.db")]
-        API["REST API\n/api/oee\n/api/downtimes"]
+    subgraph Dashboard["🖥️ Dashboard - ASP.NET Core on 5050"]
+        NatsHeartbeatService["NatsHeartbeatService<br/>NATS subscriber"]
+        DeviceTracker["DeviceTracker<br/>up/down state"]
+        OeeCalculationService["OeeCalculationService<br/>Availability x Performance x Quality"]
+        DashboardHub["DashboardHub<br/>SignalR /hubs/dashboard"]
+        DowntimeDbContext[("DowntimeDbContext<br/>SQLite - downtime.db")]
+        RestApi["REST API<br/>/api/oee, /api/downtimes"]
     end
 
-    subgraph Detector["🔍 Downtime Detector (Worker Service)"]
-        DetSub["NATS Subscriber"]
-        DetTracker["Device Tracker"]
-        DetConsole["Color-coded Console Output"]
+    subgraph Detector["🔍 Downtime Detector - Worker Service"]
+        DowntimeDetectorWorker["DowntimeDetectorWorker<br/>NATS subscriber + console"]
     end
 
-    Browser["🌐 Browser\n(Real-time UI)"]
+    Browser["🌐 Browser<br/>Real-time UI"]
 
-    PLC1 & PLC2 & PLC3 & PLC4 & PLC5 -->|"publish\nJSON heartbeat"| Subject
-    Subject -->|"subscribe\nplc.*.heartbeat"| NatsSub
-    Subject -->|"subscribe\nplc.*.heartbeat"| DetSub
-    NatsSub --> Tracker
-    Tracker --> OEECalc
-    Tracker --> Hub
-    OEECalc --> Hub
-    Tracker -->|"record downtime\n& production"| DB
-    DB --> API
-    Hub -->|"push events"| Browser
-    API -->|"HTTP GET"| Browser
-    DetSub --> DetTracker --> DetConsole
+    PLC1 -->|publish JSON heartbeat| Subject
+    PLC2 --> Subject
+    PLC3 --> Subject
+    PLC4 --> Subject
+    PLC5 --> Subject
+    PLC6 --> Subject
+    PLC7 --> Subject
+    Subject -->|"subscribe plc.*.heartbeat"| NatsHeartbeatService
+    Subject -->|"subscribe plc.*.heartbeat"| DowntimeDetectorWorker
+    NatsHeartbeatService --> DeviceTracker
+    DeviceTracker --> OeeCalculationService
+    DeviceTracker --> DashboardHub
+    OeeCalculationService --> DashboardHub
+    DeviceTracker -->|record downtime and production| DowntimeDbContext
+    DowntimeDbContext --> RestApi
+    DashboardHub -->|push events via SignalR| Browser
+    RestApi -->|HTTP GET| Browser
 ```
 
 ---
