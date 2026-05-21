@@ -53,3 +53,7 @@
 - **NuGet version pins bumped:** EF Core (Sqlite + Design) 8.* → 10.*, Microsoft.Extensions.Hosting 8.* → 10.*. Independent packages (NATS.Net, xunit, FluentAssertions, NSubstitute, Test.Sdk) kept as-is.
 - **All 3 Dockerfiles updated:** SDK 8.0 → 10.0, aspnet/runtime 8.0 → 10.0.
 - **Build verified:** `dotnet restore` + `dotnet build` succeeded cleanly on all 5 projects with .NET 10 SDK 10.0.103.
+
+## Team Updates
+- **2026-05-21:** SPEC-DEMO-02 published at `specs/spec-demo-02.md`. **You own Task 1** � add `PLC-CNC-006` (CNC Mill, `ThermalDrift`) and `PLC-PAINT-007` (Paint Booth, `BurstReject`) to `PlcSimulatorWorker.cs` plus dashboard cards/gauges. Reviewer: Ash. Unblocks Parker's Task 2.
+

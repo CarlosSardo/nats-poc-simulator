@@ -25,3 +25,7 @@
 ## Cross-Agent Updates (2026-03-10)
 - **Dallas** provided 3 SignalR events and REST endpoint for downtime data — contract honored exactly.
 - **Lambert** found and fixed a SQLite DateTimeOffset ordering bug in Dallas's backend code that would have affected the history data Parker displays.
+
+## Team Updates
+- **2026-05-21:** SPEC-DEMO-02 published at `specs/spec-demo-02.md`. **You own Task 2** (per-device emoji via `wwwroot/js/device-icons.js`) and **Task 3** (fuzzy search on `#event-log`). Reviewer: Ripley. Task 2 starts after Dallas lands Task 1; Task 3 is independent.
+
